@@ -1,10 +1,16 @@
+/* Importa las fuentes antes de Tailwind */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Tailwind CSS directivas */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Estilo global */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-family: 'Roboto', sans-serif; /* Define una variable para la fuente principal */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,8 +20,40 @@
   }
 }
 
-body {
+html, body {
+  font-family: var(--font-family); /* Usa la fuente principal definida */
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Mejora en elementos de texto */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin: 0;
+  color: var(--foreground); /* Aplica la variable de color */
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Botones y elementos interactivos */
+button {
+  font-family: var(--font-family);
+  color: var(--foreground);
+  background-color: var(--background);
+  border: 1px solid var(--foreground);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--foreground);
+  color: var(--background);
 }
