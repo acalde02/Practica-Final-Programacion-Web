@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faDownload, faInfoCircle, faPen } from '@fortawesome/free-solid-svg-icons';
 
-export default function DeliveryNoteTable({ deliveryNotes, onDeleteDeliveryNote, onDownloadPDF, onAddDeliveryNote }) {
+export default function DeliveryNoteTable({
+  deliveryNotes,
+  onDeleteDeliveryNote,
+  onDownloadPDF,
+  onAddDeliveryNote,
+  onShowClientDetails,
+  onShowProjectDetails,
+  onEditNote,
+  onShowDetails,
+}) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
 
@@ -25,88 +35,122 @@ export default function DeliveryNoteTable({ deliveryNotes, onDeleteDeliveryNote,
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg p-4">
-      {/* Header Section */}
+    <div className="bg-gray-100 text-gray-800 font-roboto p-6 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">Delivery Notes</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Delivery Notes</h2>
         <button
           onClick={onAddDeliveryNote}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300"
         >
           Add Delivery Note
         </button>
       </div>
-
-      {/* Table Section */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left bg-gray-900 rounded-lg">
-          <thead>
-            <tr className="bg-gray-700 text-gray-300">
-              <th className="px-4 py-2">Client</th>
-              <th className="px-4 py-2">Project</th>
-              <th className="px-4 py-2">Format</th>
-              <th className="px-4 py-2">Material/Hours</th>
-              <th className="px-4 py-2">Description</th>
-              <th className="px-4 py-2">Work Date</th>
-              <th className="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {deliveryNotes.length > 0 ? (
-              deliveryNotes.map((note) => (
-                <tr key={note._id} className="border-t border-gray-700 hover:bg-gray-800">
-                  <td className="px-4 py-2 text-gray-200">{note.clientName}</td>
-                  <td className="px-4 py-2 text-gray-200">{note.projectId?.name || 'Unknown Project'}</td>
-                  <td className="px-4 py-2 text-gray-200 capitalize">{note.format}</td>
-                  <td className="px-4 py-2 text-gray-200">
-                    {note.format === 'material' ? note.material : `${note.hours} hours`}
-                  </td>
-                  <td className="px-4 py-2 text-gray-200">{note.description}</td>
-                  <td className="px-4 py-2 text-gray-200">{note.workdate}</td>
-                  <td className="px-4 py-2 flex gap-2">
+      <div className="space-y-4">
+        <AnimatePresence>
+          {deliveryNotes.length > 0 ? (
+            deliveryNotes.map((note, index) => (
+              <motion.div
+                key={note._id}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow space-y-4"
+              >
+                <div className="flex justify-between">
+                  {/* Client and Project Info */}
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-700">
+                      <span
+                        onClick={() => onShowClientDetails(note.clientId)}
+                        className="text-blue-500 underline hover:text-blue-600 transition-all cursor-pointer"
+                      >
+                        {note.client?.name || 'Unknown Client'}
+                      </span>
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Project:{' '}
+                      <span
+                        onClick={() => onShowProjectDetails(note.projectId._id)}
+                        className="text-blue-500 underline hover:text-blue-600 transition-all cursor-pointer"
+                      >
+                        {note.projectId?.name || 'Unknown Project'}
+                      </span>
+                    </p>
+                  </div>
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onShowDetails(note._id)}
+                      className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300"
+                      title="View Details"
+                    >
+                      <FontAwesomeIcon icon={faInfoCircle} />
+                    </button>
+                    <button
+                      onClick={() => onEditNote(note)}
+                      className="p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-300"
+                      title="Edit Note"
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </button>
                     <button
                       onClick={() => onDownloadPDF(note._id)}
-                      className="p-2 bg-blue-500 rounded hover:bg-blue-600 flex items-center justify-center"
+                      className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300"
+                      title="Download PDF"
                     >
                       <FontAwesomeIcon icon={faDownload} />
                     </button>
                     <button
                       onClick={() => handleDeleteClick(note)}
-                      className="p-2 bg-red-500 rounded hover:bg-red-600 flex items-center justify-center"
+                      className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300"
+                      title="Delete Note"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="px-4 py-4 text-center text-gray-400">
-                  No delivery notes found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </div>
+                </div>
+                {/* Additional Details */}
+                <div className="text-gray-600">
+                  <p>
+                    <strong>Format:</strong> {note.format}
+                  </p>
+                  <p>
+                    <strong>Material/Hours:</strong>{' '}
+                    {note.format === 'material' ? note.material : `${note.hours} hours`}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {note.description}
+                  </p>
+                  <p>
+                    <strong>Work Date:</strong> {note.workdate}
+                  </p>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500">
+              No delivery notes found. Add one to get started!
+            </div>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Confirm Delete Modal */}
       {isConfirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg text-gray-900">
-            <p className="mb-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-gray-800 max-w-md">
+            <p className="text-center mb-4">
               Are you sure you want to delete the delivery note for client "{selectedNote?.clientName}"?
             </p>
             <div className="flex justify-end gap-4">
               <button
                 onClick={handleCancelDelete}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-400 text-gray-800 rounded-lg hover:bg-gray-500"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               >
                 Confirm
               </button>

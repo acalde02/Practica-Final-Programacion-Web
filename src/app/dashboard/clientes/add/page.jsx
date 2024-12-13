@@ -43,9 +43,11 @@ export default function AddClientPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-      <div className="w-full max-w-lg bg-gray-800 rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Add a New Client</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-white to-blue-700 text-gray-900">
+      <div className="w-full max-w-4xl rounded-lg p-8">
+        <h1 className="text-4xl font-bold text-center mb-8 text-blue-700">
+          Add a New Client
+        </h1>
         <AddClientForm onSubmit={handleAddClient} />
       </div>
       {showConfirm && (

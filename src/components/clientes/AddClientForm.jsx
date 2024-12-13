@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AddClientForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export default function AddClientForm({ onSubmit }) {
   });
 
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,55 +98,65 @@ export default function AddClientForm({ onSubmit }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-800 text-white p-4 rounded-lg shadow-lg max-w-md mx-auto"
+      className="bg-gray-100 text-gray-800 p-6 rounded-xl shadow-lg max-w-3xl mx-auto space-y-6"
     >
-      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-300">Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 mt-1 text-gray-200 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-300">CIF:</label>
-        <input
-          type="text"
-          name="cif"
-          value={formData.cif}
-          onChange={handleChange}
-          maxLength={9}
-          required
-          className="w-full px-3 py-2 mt-1 text-gray-200 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <h3 className="text-md font-semibold text-gray-300 mb-4">Address</h3>
-      {['street', 'number', 'postal', 'city', 'province'].map((field) => (
-        <div key={field} className="mb-4">
-          <label className="block text-sm font-medium text-gray-300">
-            {field.charAt(0).toUpperCase() + field.slice(1)}:
-          </label>
+      {error && <p className="text-red-500 text-center text-sm">{error}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Name:</label>
           <input
-            type={field === 'number' || field === 'postal' ? 'text' : 'text'}
-            name={`address.${field}`}
-            value={formData.address[field]}
+            type="text"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
-            maxLength={field === 'postal' ? 5 : undefined}
-            required
-            className="w-full px-3 py-2 mt-1 text-gray-200 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-      ))}
-      <button
-        type="submit"
-        className="w-full px-4 py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 transition-all duration-300"
-      >
-        Add Client
-      </button>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">CIF:</label>
+          <input
+            type="text"
+            name="cif"
+            value={formData.cif}
+            onChange={handleChange}
+            maxLength={9}
+            className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+      <h3 className="text-lg font-semibold text-gray-800">Address</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {['street', 'number', 'postal', 'city', 'province'].map((field) => (
+          <div key={field} className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              {field.charAt(0).toUpperCase() + field.slice(1)}:
+            </label>
+            <input
+              type="text"
+              name={`address.${field}`}
+              value={formData.address[field]}
+              onChange={handleChange}
+              maxLength={field === 'postal' ? 5 : undefined}
+              className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between items-center">
+        <button
+          type="button"
+          onClick={() => router.push('/dashboard/clientes')}
+          className="px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 transition-all duration-300"
+        >
+          Back
+        </button>
+        <button
+          type="submit"
+          className="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all duration-300"
+        >
+          Add Client
+        </button>
+      </div>
     </form>
   );
 }
